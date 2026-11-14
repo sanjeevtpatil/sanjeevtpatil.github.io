@@ -16,6 +16,7 @@
   --accent:#1d5a7a; --accent-soft:#e2eef4; --copper:#a9571b;
   --hero-bg:#0c1f2c; --hero-bg2:#123245; --hero-ink:#eef3f6; --hero-muted:#a9bcc9; --hero-rule:#234558; --hero-copper:#e59a5c;
   --f-bfo:#b9652c; --f-bfo2:#e59a5c; --f-ag:#8a9eac; --f-pet:#d5e4ec; --f-pet-s:#b3cad6; --f-gas:#2a7f9c; --f-gas2:#c2493d; --f-leaf:#4f8a4a; --f-ray:#d99a22;
+  --q1:#237a4b; --q2:#9a7a00; --q3:#c2611a; --q4:#b63a34;
   --shadow:0 1px 2px rgba(16,32,44,.06), 0 8px 24px rgba(16,32,44,.06);
   --display:"Newsreader", Georgia, "Times New Roman", serif;
   --body:"IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
@@ -24,12 +25,12 @@
 @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
   --bg:#0e151b; --band:#121c24; --card:#17232d; --ink:#e8edf1; --muted:#9aa8b4; --rule:#26343f;
   --accent:#86c1e0; --accent-soft:#17303f; --copper:#e59a5c;
-  --f-bfo:#d07f43; --f-bfo2:#f0ab72; --f-ag:#a9bcc9; --f-pet:#24465a; --f-pet-s:#356079; --f-gas:#5bb4d1; --f-gas2:#e2756a; --f-leaf:#7fbf74; --f-ray:#eab54a;
+  --f-bfo:#d07f43; --f-bfo2:#f0ab72; --f-ag:#a9bcc9; --f-pet:#24465a; --f-pet-s:#356079; --f-gas:#5bb4d1; --f-gas2:#e2756a; --f-leaf:#7fbf74; --f-ray:#eab54a; --q1:#6fcf97; --q2:#e6c34a; --q3:#f0965a; --q4:#ef7a72;
   --hero-bg:#091822; --hero-bg2:#0f2a3a; --shadow:0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.25); color-scheme:dark }}
 :root[data-theme="dark"]{
   --bg:#0e151b; --band:#121c24; --card:#17232d; --ink:#e8edf1; --muted:#9aa8b4; --rule:#26343f;
   --accent:#86c1e0; --accent-soft:#17303f; --copper:#e59a5c;
-  --f-bfo:#d07f43; --f-bfo2:#f0ab72; --f-ag:#a9bcc9; --f-pet:#24465a; --f-pet-s:#356079; --f-gas:#5bb4d1; --f-gas2:#e2756a; --f-leaf:#7fbf74; --f-ray:#eab54a;
+  --f-bfo:#d07f43; --f-bfo2:#f0ab72; --f-ag:#a9bcc9; --f-pet:#24465a; --f-pet-s:#356079; --f-gas:#5bb4d1; --f-gas2:#e2756a; --f-leaf:#7fbf74; --f-ray:#eab54a; --q1:#6fcf97; --q2:#e6c34a; --q3:#f0965a; --q4:#ef7a72;
   --hero-bg:#091822; --hero-bg2:#0f2a3a; --shadow:0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.25); color-scheme:dark }
 
 *{box-sizing:border-box}
@@ -166,8 +167,8 @@ section.band.alt{background:var(--band)}
 /* publications */
 .pub-group{display:grid;grid-template-columns:200px minmax(0,1fr);gap:32px;padding-block:28px;border-top:1px solid var(--rule)}
 .pub-group:first-of-type{border-top:0;padding-top:0}
-.pub-group > h3{font-size:1.15rem}
-.pub-group > h3 small{display:block;font-family:var(--mono);font-size:.74rem;font-weight:400;color:var(--muted);margin-top:6px;letter-spacing:.02em}
+.pub-group h3{font-size:1.15rem}
+.pub-group h3 small{display:block;font-family:var(--mono);font-size:.74rem;font-weight:400;color:var(--muted);margin-top:6px;letter-spacing:.02em}
 ol.pubs{list-style:none;margin:0;padding:0;display:grid;gap:20px}
 ol.pubs li{display:grid;grid-template-columns:38px minmax(0,1fr);gap:10px}
 ol.pubs .n{font-family:var(--mono);font-size:.78rem;color:var(--copper);padding-top:4px}
@@ -178,6 +179,17 @@ ol.pubs .n{font-family:var(--mono);font-size:.78rem;color:var(--copper);padding-
 .doi:hover{text-decoration:underline}
 .me{font-weight:600;color:var(--ink)}
 .pill{display:inline-block;font-family:var(--mono);font-size:.68rem;padding:2px 8px;border-radius:999px;background:var(--accent-soft);color:var(--accent);vertical-align:2px;margin-left:6px;letter-spacing:.03em}
+.pill.ghost{background:transparent;box-shadow:inset 0 0 0 1px var(--rule);color:var(--muted)}
+.tags{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:7px 0 5px}
+.tags .pill{margin-left:0;vertical-align:0}
+.q{--qc:var(--muted);display:inline-flex;align-items:center;gap:2px;font-family:var(--mono);font-size:.7rem;font-weight:500;line-height:1;padding:4px 8px 4px 7px;border-radius:999px;color:var(--qc);background:color-mix(in srgb, var(--qc) 13%, transparent);letter-spacing:.03em}
+.q i{width:3px;height:9px;border-radius:1px;background:currentColor;opacity:.22}
+.q i:last-of-type{margin-right:5px}
+.q1{--qc:var(--q1)} .q2{--qc:var(--q2)} .q3{--qc:var(--q3)} .q4{--qc:var(--q4)}
+.q1 i,.q2 i:nth-child(-n+3),.q3 i:nth-child(-n+2),.q4 i:nth-child(1){opacity:1}
+.q0{padding-left:8px}
+.qkey{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:16px}
+.qkey span:first-child{flex-basis:100%;font-family:var(--mono);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
 ul.plain{list-style:none;margin:0;padding:0;display:grid;gap:10px}
 ul.plain li{display:grid;grid-template-columns:56px minmax(0,1fr);gap:12px;font-size:.94rem}
 ul.plain .y{font-family:var(--mono);font-size:.82rem;color:var(--copper);font-variant-numeric:tabular-nums;padding-top:2px}
@@ -341,7 +353,7 @@ footer{background:var(--hero-bg);color:var(--hero-muted);border-top:1px solid va
           <input type="range" id="density" min="0.3" max="2.5" step="0.05" value="1.1">
           <output id="perc-status" for="density"></output>
         </div>
-        <figcaption>Drag the slider to add silver nanowires between two electrodes. Below a critical density there is no conducting path. Just above it a few links carry all the current, so a gas-sensitive junction has the most leverage. Dense networks conduct well but bypass the ceramic. <cite>After my review in Ceramics International (2026).</cite></figcaption>
+        <figcaption>Drag the slider to add silver nanowires between two electrodes. Below a critical density there is no conducting path. Just above it a few links carry all the current, so a gas-sensitive junction has the most leverage. Dense networks conduct well but bypass the ceramic. <cite>(Review) Ceramics International (2026).</cite></figcaption>
       </figure>
       <figure class="feature">
         <div><span class="kicker">Bio-inspired design</span><h3>A photodetector built like a leaf</h3></div>
@@ -383,34 +395,43 @@ footer{background:var(--hero-bg);color:var(--hero-muted);border-top:1px solid va
     </div>
 
     <div class="pub-group">
-      <h3>Journal articles<small>9 peer-reviewed</small></h3>
+      <div><h3>Journal articles<small>9 peer-reviewed</small></h3><div class="qkey"><span>Journal quartile</span><span class="q q1" title="Quartile 1 journal"><i></i><i></i><i></i><i></i>Q1</span><span class="q q2" title="Quartile 2 journal"><i></i><i></i><i></i><i></i>Q2</span><span class="q q3" title="Quartile 3 journal"><i></i><i></i><i></i><i></i>Q3</span><span class="q q4" title="Quartile 4 journal"><i></i><i></i><i></i><i></i>Q4</span></div></div>
       <ol class="pubs">
         <li><span class="n">J9</span><div><div class="pub-title">Percolation-network engineering in ceramic gas sensors: Design principles from optoelectronics and EMI shielding</div>
-          <div class="pub-meta"><span class="me">S. Patil</span>. <i>Ceramics International</i> (2026), online November 2026 <span class="pill">sole author</span></div>
+          <div class="pub-meta"><span class="me">S. Patil</span>. <i>Ceramics International</i> (2026), online November 2026</div>
+          <div class="tags"><span class="q q1" title="Quartile 1 journal"><i></i><i></i><i></i><i></i>Q1</span><span class="pill">sole and corresponding author</span><span class="pill ghost">review</span></div>
           <a class="doi" href="https://doi.org/10.1016/j.ceramint.2026.11.046">doi:10.1016/j.ceramint.2026.11.046</a></div></li>
         <li><span class="n">J8</span><div><div class="pub-title">Silver nanowire-sensitized titanium dioxide for flexible, room temperature dual-gas sensing</div>
           <div class="pub-meta"><span class="me">S. Patil</span>, A. Sudha, G. Nagasarvari, P. Swaminathan. <i>Ceramics International</i> 52(26), 50672–50683 (2026)</div>
+          <div class="tags"><span class="q q1" title="Quartile 1 journal"><i></i><i></i><i></i><i></i>Q1</span><span class="pill">corresponding author</span><span class="pill ghost">equal contribution</span></div>
           <a class="doi" href="https://doi.org/10.1016/j.ceramint.2026.08.311">doi:10.1016/j.ceramint.2026.08.311</a></div></li>
         <li><span class="n">J7</span><div><div class="pub-title">Leaf-inspired flexible and transparent printed bismuth ferrite nanocomposite photodetectors</div>
           <div class="pub-meta"><span class="me">S. Patil</span>, P. Swaminathan. <i>Surfaces and Interfaces</i> 59, 105904 (2025)</div>
+          <div class="tags"><span class="q q1" title="Quartile 1 journal"><i></i><i></i><i></i><i></i>Q1</span><span class="pill">corresponding author</span></div>
           <a class="doi" href="https://doi.org/10.1016/j.surfin.2025.105904">doi:10.1016/j.surfin.2025.105904</a></div></li>
         <li><span class="n">J6</span><div><div class="pub-title">Percolation network-enabled bismuth ferrite nanocomposites as a Faraday cage</div>
           <div class="pub-meta"><span class="me">S. Patil</span>, A. Kumar, P. Swaminathan. <i>Materialia</i> 42, 102496 (2025)</div>
+          <div class="tags"><span class="q q2" title="Quartile 2 journal"><i></i><i></i><i></i><i></i>Q2</span></div>
           <a class="doi" href="https://doi.org/10.1016/j.mtla.2025.102496">doi:10.1016/j.mtla.2025.102496</a></div></li>
         <li><span class="n">J5</span><div><div class="pub-title">A flexible room temperature nitrogen dioxide sensor based on tungsten oxide-silver nanowire composite</div>
           <div class="pub-meta">A. Sudha, <span class="me">S. Patil</span>, P. Swaminathan. <i>Next Research</i> 2(2), 100204 (2025)</div>
+          <div class="tags"><span class="q q0" title="New journal, not yet ranked">New journal</span><span class="pill ghost">equal contribution</span></div>
           <a class="doi" href="https://doi.org/10.1016/j.nexres.2025.100204">doi:10.1016/j.nexres.2025.100204</a></div></li>
         <li><span class="n">J4</span><div><div class="pub-title">Flexible, frugal, and fast carbon dioxide sensing by bismuth ferrite-silver nanowires</div>
           <div class="pub-meta"><span class="me">S. Patil</span>, A. Sudha, P. Swaminathan. <i>Next Materials</i> 6, 100471 (2025)</div>
+          <div class="tags"><span class="q q1" title="Quartile 1 journal"><i></i><i></i><i></i><i></i>Q1</span><span class="pill">corresponding author</span></div>
           <a class="doi" href="https://doi.org/10.1016/j.nxmate.2024.100471">doi:10.1016/j.nxmate.2024.100471</a></div></li>
         <li><span class="n">J3</span><div><div class="pub-title">Bismuth ferrite–silver nanowire flexible nanocomposites for room-temperature nitrogen dioxide sensing</div>
           <div class="pub-meta"><span class="me">S. Patil</span>, S. Arumugam, P. Swaminathan. <i>ACS Omega</i> 9(26), 28978–28988 (2024)</div>
+          <div class="tags"><span class="q q1" title="Quartile 1 journal"><i></i><i></i><i></i><i></i>Q1</span></div>
           <a class="doi" href="https://doi.org/10.1021/acsomega.4c04076">doi:10.1021/acsomega.4c04076</a></div></li>
         <li><span class="n">J2</span><div><div class="pub-title">Improving the photoresponse of magnetron sputtered titania films by optimizing substrate and electrode configuration</div>
           <div class="pub-meta">A. Sudha, A. Ashok, <span class="me">S. Patil</span>, S. K. Yadav, P. Swaminathan. <i>Solar Energy</i> 266, 112163 (2023)</div>
+          <div class="tags"><span class="q q1" title="Quartile 1 journal"><i></i><i></i><i></i><i></i>Q1</span><span class="pill ghost">equal contribution</span></div>
           <a class="doi" href="https://doi.org/10.1016/j.solener.2023.112163">doi:10.1016/j.solener.2023.112163</a></div></li>
         <li><span class="n">J1</span><div><div class="pub-title">Precursor-based bismuth ferrite ink for direct writing</div>
           <div class="pub-meta"><span class="me">S. Patil</span>, P. Swaminathan. <i>Materials Letters</i> 343, 134390 (2023)</div>
+          <div class="tags"><span class="q q2" title="Quartile 2 journal"><i></i><i></i><i></i><i></i>Q2</span><span class="pill">corresponding author</span></div>
           <a class="doi" href="https://doi.org/10.1016/j.matlet.2023.134390">doi:10.1016/j.matlet.2023.134390</a></div></li>
       </ol>
     </div>
