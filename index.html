@@ -226,8 +226,17 @@ ol.pubs .n{font-family:var(--mono);font-size:.78rem;color:var(--copper);padding-
 .q1{--qc:var(--q1)} .q2{--qc:var(--q2)} .q3{--qc:var(--q3)} .q4{--qc:var(--q4)}
 .q1 i,.q2 i:nth-child(-n+3),.q3 i:nth-child(-n+2),.q4 i:nth-child(1){opacity:1}
 .q0{padding-left:8px}
-.qkey{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:16px}
-.qkey span:first-child{flex-basis:100%;font-family:var(--mono);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.qkey{margin-top:18px;display:grid;gap:10px;max-width:220px}
+.qk-title{font-family:var(--mono);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.qbar{display:flex;gap:2px;height:8px;border-radius:999px;overflow:hidden;background:var(--rule)}
+.qbar span{display:block;min-width:0}
+.qbar .b1{background:var(--q1)} .qbar .b2{background:var(--q2)} .qbar .b3{background:var(--q3)} .qbar .b4{background:var(--q4)} .qbar .b0{background:var(--muted);opacity:.45}
+.qlist{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.qlist li{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.qlist b{font-family:var(--display);font-size:1.15rem;font-weight:500;font-variant-numeric:tabular-nums;line-height:1}
+.qlist li.zero{opacity:.45}
+.qlist li.zero b{font-weight:400}
+.qk-sum{font-size:.8rem;color:var(--muted)}
 ul.plain{list-style:none;margin:0;padding:0;display:grid;gap:10px}
 ul.plain li{display:grid;grid-template-columns:56px minmax(0,1fr);gap:12px;font-size:.94rem}
 ul.plain .y{font-family:var(--mono);font-size:.82rem;color:var(--copper);font-variant-numeric:tabular-nums;padding-top:2px}
@@ -271,6 +280,8 @@ footer{background:var(--hero-bg);color:var(--hero-muted);border-top:1px solid va
   .stat:nth-child(n+3){border-top:1px solid var(--hero-rule)}
   section.band{padding-block:52px}
   .cards,.cards.three,.awards,.two,.features,.explore{grid-template-columns:1fr}
+  .qkey{max-width:none}
+  .qlist{grid-template-columns:repeat(auto-fill,minmax(130px,1fr));column-gap:24px}
   .pagehead .wrap{padding-block:40px 36px}
   .pipeline{grid-template-columns:1fr;gap:14px}
   .pipeline li{grid-template-columns:104px minmax(0,1fr);column-gap:16px;align-content:center}
