@@ -12,12 +12,19 @@
 <meta property="og:title" content="Experience, Teaching and Awards | Dr. Sanjeev Patil">
 <meta property="og:description" content="Appointments at CUMI, IIT Gandhinagar (ANRF MAHA-EV National Mission) and IIT Madras, education, teaching and mentoring, and fellowships including the Prime Minister's Research Fellowship.">
 <meta property="og:url" content="https://sanjeevtpatil.github.io/experience.html">
-<meta property="og:image" content="https://sanjeevtpatil.github.io/photo.jpg">
+<meta property="og:image" content="https://sanjeevtpatil.github.io/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Dr. Sanjeev Patil, materials scientist">
 <meta property="og:site_name" content="Sanjeev Patil">
-<meta name="twitter:card" content="summary">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Experience, Teaching and Awards | Dr. Sanjeev Patil">
 <meta name="twitter:description" content="Appointments at CUMI, IIT Gandhinagar (ANRF MAHA-EV National Mission) and IIT Madras, education, teaching and mentoring, and fellowships including the Prime Minister's Research Fellowship.">
-<meta name="twitter:image" content="https://sanjeevtpatil.github.io/photo.jpg">
+<meta name="twitter:image" content="https://sanjeevtpatil.github.io/og.png">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="theme-color" content="#0c1f2c">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
@@ -66,7 +73,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 header.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:20px;padding-block:14px}
 .brand{font-family:var(--display);font-size:1.15rem;font-weight:600;color:var(--hero-ink);text-decoration:none;white-space:nowrap}
 .brand span{color:var(--hero-copper)}
-nav.sections{display:flex;gap:22px;overflow-x:auto;scrollbar-width:none;min-width:0}
+nav.sections{display:flex;gap:22px;overflow-x:auto;scrollbar-width:none;min-width:0;scroll-padding-inline:24px}
 nav.sections::-webkit-scrollbar{display:none}
 nav.sections a{color:var(--hero-muted);text-decoration:none;font-size:.9rem;white-space:nowrap;padding-block:2px;border-bottom:1px solid transparent;transition:color .15s,border-color .15s}
 nav.sections a:hover,nav.sections a.on{color:var(--hero-ink);border-bottom-color:var(--hero-copper)}
@@ -211,6 +218,31 @@ section.band.alt{background:var(--band)}
 .state.on{background:var(--copper);color:var(--card)}
 .fignote{margin-top:18px;font-size:.82rem;color:var(--muted)}
 
+/* review pass: news, key results, skip link, footer, mobile nav, print */
+.skip{position:absolute;left:12px;top:-60px;z-index:50;background:var(--hero-copper);color:#1b1108;padding:10px 16px;border-radius:8px;font-weight:600;text-decoration:none}
+.skip:focus{top:calc(env(safe-area-inset-top, 0px) + 10px)}
+input[type=range]:focus-visible{outline:2px solid var(--copper);outline-offset:4px;border-radius:4px}
+section.band.news{padding-block:44px;border-bottom:1px solid var(--rule)}
+.news-grid{display:grid;grid-template-columns:200px minmax(0,1fr);gap:32px;align-items:start}
+.news-grid h2{font-size:1.5rem}
+.news-list{list-style:none;margin:0;padding:0;display:grid;gap:12px}
+.news-list li{display:grid;grid-template-columns:92px minmax(0,1fr);gap:16px;font-size:.96rem;padding-bottom:12px;border-bottom:1px dashed var(--rule)}
+.news-list li:last-child{border-bottom:0;padding-bottom:0}
+.news-list time{font-family:var(--mono);font-size:.8rem;color:var(--copper);padding-top:2px;font-variant-numeric:tabular-nums}
+p.key{font-size:.9rem;color:var(--ink);margin-top:6px;max-width:72ch}
+p.key span{font-family:var(--mono);font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;color:var(--copper);margin-right:8px}
+.foot{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px 24px}
+.foot nav{display:flex;flex-wrap:wrap;gap:6px 18px}
+.foot a{color:var(--hero-muted);text-decoration:none}
+.foot a:hover{color:var(--hero-ink)}
+@media print{
+  header.top,.skip,#wires,canvas,.perc-ctl,.pager,.pagehead .jump,.links,body::before{display:none !important}
+  body,.hero,.pagehead,.stats,.contact,footer,section.band.alt{background:#fff !important;color:#000 !important}
+  .hero *,.pagehead *,.stats *,.contact *,footer *{color:#000 !important}
+  .card,.feature{box-shadow:none !important;break-inside:avoid}
+  section.band{padding-block:20px}
+  a.ref,a.doi{color:#000}
+}
 /* publications */
 .pub-group{display:grid;grid-template-columns:200px minmax(0,1fr);gap:32px;padding-block:28px;border-top:1px solid var(--rule)}
 .pub-group:first-of-type{border-top:0;padding-top:0}
@@ -306,6 +338,12 @@ footer{background:var(--hero-bg);color:var(--hero-muted);border-top:1px solid va
   .pub-group{grid-template-columns:1fr;gap:16px}
   .contact-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
+@media (max-width:700px){
+  header.top .wrap{gap:12px}
+  nav.sections{-webkit-mask-image:linear-gradient(90deg,#000 80%,transparent);mask-image:linear-gradient(90deg,#000 80%,transparent);padding-right:24px}
+  .news-grid{grid-template-columns:1fr;gap:14px}
+  .news-list li{grid-template-columns:72px minmax(0,1fr);gap:12px}
+}
 @media (max-width:480px){
   .expertise,.contact-grid{grid-template-columns:1fr}
   .award{grid-template-columns:78px minmax(0,1fr)}
@@ -313,6 +351,7 @@ footer{background:var(--hero-bg);color:var(--hero-muted);border-top:1px solid va
 </style>
 </head>
 <body>
+<a class="skip" href="#top">Skip to content</a>
 <header class="top">
   <div class="wrap">
     <a class="brand" href="index.html">Sanjeev Patil<span>.</span></a>
@@ -414,7 +453,7 @@ footer{background:var(--hero-bg);color:var(--hero-muted);border-top:1px solid va
 </section>
 </main>
 
-<footer><div class="wrap">© 2026 Sanjeev Patil · Updated November 2026 · Header drawings are simulated silver-nanowire percolation networks.</div></footer>
+<footer><div class="wrap foot"><span>© 2026 Sanjeev Patil · Updated November 2026 · Header drawings are simulated silver-nanowire percolation networks.</span><nav aria-label="Footer"><a href="index.html">Home</a><a href="research.html">Research</a><a href="publications.html">Publications</a><a href="experience.html">Experience</a><a href="cv.pdf">CV (PDF)</a></nav></div></footer>
 
 <script>
 (function(){
@@ -499,6 +538,9 @@ footer{background:var(--hero-bg);color:var(--hero-muted);border-top:1px solid va
       out.innerHTML='<span class="meter"><span><b>'+se+' dB</b></span><span>blocks <b>'+blocked.toFixed(d)+'%</b></span><span>lets through <b>1 in '+fmt(1/pass)+'</b></span></span> <span class="state'+tag[1]+'">'+tag[0]+'</span>';}
     draw();sl.addEventListener('input',draw);
   })();
+
+  // On narrow screens, scroll the page menu so the current page's link is visible.
+  (function(){var on=document.querySelector('nav.sections a.on'),nav=document.querySelector('nav.sections');if(on&&nav&&nav.scrollWidth>nav.clientWidth){var d=on.getBoundingClientRect().left-nav.getBoundingClientRect().left;nav.scrollLeft=Math.max(0,d-nav.clientWidth/2+on.offsetWidth/2);}})();
 </script>
 </body>
 </html>
