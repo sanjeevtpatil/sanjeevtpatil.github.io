@@ -84,6 +84,12 @@ nav.sections a:hover,nav.sections a.on{color:var(--hero-ink);border-bottom-color
 .pagehead h1{font-size:clamp(2.3rem,5vw,3.4rem);font-weight:500;letter-spacing:-.02em}
 .pagehead p.intro{color:var(--hero-muted);font-size:1.06rem;max-width:66ch}
 .pagehead p.intro a{color:var(--hero-ink)}
+.metrics{display:flex;flex-wrap:wrap;gap:10px 34px;align-items:end;margin-top:4px}
+.metrics div{display:grid;gap:2px}
+.metrics b{font-family:var(--display);font-size:2rem;font-weight:500;line-height:1;font-variant-numeric:tabular-nums}
+.metrics span{font-family:var(--mono);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;color:var(--hero-copper)}
+.metrics small{font-size:.8rem;color:var(--hero-muted);align-self:end;padding-bottom:3px}
+.metrics small a{color:var(--hero-muted)}
 .pagehead .jump{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
 .pagehead .jump a{font-size:.85rem;color:var(--hero-ink);text-decoration:none;padding:6px 14px;border:1px solid var(--hero-rule);border-radius:999px;background:rgba(255,255,255,.04)}
 .pagehead .jump a:hover{border-color:var(--hero-copper)}
@@ -120,12 +126,14 @@ a.ref:hover{color:var(--accent)}
 
 /* stat strip */
 .stats{background:var(--hero-bg);color:var(--hero-ink);border-top:1px solid var(--hero-rule)}
-.stats .wrap{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0}
+.stats .wrap{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:0}
 .stat{padding:22px 20px 22px 0;display:grid;gap:2px}
 .stat + .stat{padding-left:24px;border-left:1px solid var(--hero-rule)}
 .stat b{font-family:var(--display);font-size:2rem;font-weight:500;line-height:1.1;font-variant-numeric:tabular-nums;color:var(--hero-ink)}
 .stat b sup{font-size:.5em;color:var(--hero-copper);margin-left:2px}
 .stat span{font-size:.84rem;color:var(--hero-muted);line-height:1.4}
+.stat span a{color:var(--hero-ink)}
+.stat .nw{white-space:nowrap;font-size:inherit;color:inherit}
 
 /* bands */
 section.band{padding-block:76px}
@@ -320,6 +328,7 @@ footer{background:var(--hero-bg);color:var(--hero-muted);border-top:1px solid va
   .stats .wrap{grid-template-columns:repeat(2,minmax(0,1fr))}
   .stat,.stat + .stat{padding:16px 12px 16px 0;border-left:0}
   .stat:nth-child(n+3){border-top:1px solid var(--hero-rule)}
+  .stat:last-child:nth-child(odd){grid-column:1/-1}
   section.band{padding-block:52px}
   .cards,.cards.three,.awards,.two,.features,.explore{grid-template-columns:1fr}
   .card.wide{grid-template-columns:1fr}
