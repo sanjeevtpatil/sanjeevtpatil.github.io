@@ -210,12 +210,24 @@ section.band.alt{background:var(--band)}
 .fig .lnC{fill:none;stroke:var(--copper);stroke-width:2.2} .fig .lnCd{fill:var(--copper)} .fig .lnCt{fill:var(--copper)}
 .fig .big{stroke:var(--card);stroke-width:2}
 .fig .mark{stroke:var(--ink);stroke-width:1.2;stroke-dasharray:3 3}
+.fig .beam{stroke:var(--f-ray);stroke-width:7;stroke-linecap:round} .fig .beam.nmb{stroke:var(--muted);stroke-width:1.2;stroke-dasharray:4 4;opacity:.6}
+.fig .nm{fill:var(--muted);opacity:.12} .fig .ind{stroke-dasharray:5 4} .fig .pband{fill:var(--f-ray);opacity:.12} .fig .lnT{fill:none;stroke:var(--f-ray);stroke-width:2.2} .fig .lnTd{fill:var(--f-ray)} .fig [data-l]{transition:opacity .2s} .src{font-family:var(--mono);font-size:.72rem;color:var(--muted)} .src.ind{color:var(--copper)} #se-status .meter{display:grid;gap:4px} .emi-ser{transition:opacity .2s}
+.perc-ctl .lbl{font-family:var(--mono);font-size:.74rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.seg{display:inline-flex;border:1px solid var(--rule);border-radius:999px;padding:2px;justify-self:start;background:var(--card)}
+.seg button{font:inherit;font-family:var(--mono);font-size:.76rem;border:0;background:none;color:var(--muted);padding:4px 12px;border-radius:999px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--card)}
+.seg button:focus-visible{outline:2px solid var(--copper);outline-offset:2px}
 .meter{display:inline-flex;gap:14px;flex-wrap:wrap;font-size:.92rem}
 .meter b{font-family:var(--mono);font-weight:500;font-variant-numeric:tabular-nums}
 .feature{margin:0;background:var(--card);border:1px solid var(--rule);border-radius:14px;padding:26px;display:grid;gap:14px;align-content:start;box-shadow:var(--shadow);min-width:0}
 .feature .fig{background:var(--band);border-radius:10px;padding:10px;overflow:hidden}
 .feature figcaption{font-size:.9rem;color:var(--muted)}
 .feature figcaption cite{font-style:normal;color:var(--ink)}
+.feature.wide{grid-column:1/-1}
+#pd{display:block;width:100%;border-radius:6px}
+.pd-ctl{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:14px 28px;align-items:start}
+.pd-ctl output{font-size:.92rem;display:grid;gap:4px}
+.pd-ctl output b{font-family:var(--mono);font-weight:500;font-variant-numeric:tabular-nums}
 #perc{display:block;width:100%;aspect-ratio:2/1;border-radius:6px}
 .perc-ctl{display:grid;grid-template-columns:auto minmax(0,1fr);gap:8px 14px;align-items:center}
 .perc-ctl label{font-family:var(--mono);font-size:.74rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
@@ -331,6 +343,7 @@ footer{background:var(--hero-bg);color:var(--hero-muted);border-top:1px solid va
   .stat:last-child:nth-child(odd){grid-column:1/-1}
   section.band{padding-block:52px}
   .cards,.cards.three,.awards,.two,.features,.explore{grid-template-columns:1fr}
+  .pd-ctl{grid-template-columns:1fr}
   .card.wide{grid-template-columns:1fr}
   .card.wide > .fig{grid-row:auto;margin:-26px -26px 4px;border-radius:13px 13px 0 0;border-right:0;border-bottom:1px solid var(--rule)}
   .card.wide ul{columns:1}
@@ -535,20 +548,154 @@ footer{background:var(--hero-bg);color:var(--hero-muted);border-top:1px solid va
     draw();sl.addEventListener('input',draw);
   })();
 
-  // Shielding effectiveness: SE (dB) = 10·log10(P_in/P_out); the drawn field amplitude scales as 10^(-SE/20).
+  // EMI composition model.
+  // Measured: X-band SE (Materialia 2025) for drop-cast BiFeO3–Ag NW films at 5 and 20 mg/mL, and 550 nm transmittance
+  // (Surfaces & Interfaces 2025) of printed 1:9 and 1:4 molar Ag:BiFeO3 films (~3.7 and 7.9 wt% Ag): 67% and 80%.
+  // Indicative (approved by the author as a trend, not data): below the lowest measured Ag content SE follows a percolation
+  // sigmoid (threshold ~5 wt%) down to ~2 dB for bare BiFeO3; the 20 mg/mL curve below 50 wt% follows the 5 mg/mL shape.
+  // Transmittance: T = 88% (PET) × film term, film term = 0.95 + 0.0003·w − 0.7025·exp(−w/2.826): the nanowire mesh opens a
+  // continuous BiFeO3 film once it percolates (fitted through the two measured points), then a slow rise as less oxide blocks light.
+  // At 20 mg/mL the film is treated as 4× thicker (Beer–Lambert, film term^4).
   (function(){
-    var sl=document.getElementById('se'),out=document.getElementById('se-status'),w=document.getElementById('emi-out');if(!sl)return;
-    function fmt(n){return Math.round(n).toLocaleString('en-IN');}
-    function draw(){var se=+sl.value,a=34*Math.pow(10,-se/20),p=[],x;
-      for(x=226;x<=386;x+=2)p.push(x+','+(80-a*Math.sin((x-14)/40*2*Math.PI)).toFixed(1));
-      w.setAttribute('points',p.join(' '));
-      var pass=Math.pow(10,-se/10),blocked=(1-pass)*100,d=Math.max(0,Math.ceil(se/10)-2);
-      var tag=se===38?['my BiFeO₃/Ag film',' on']:(se>=20?['above the 20 dB often quoted for commercial use','']:['below the 20 dB often quoted for commercial use','']);
-      out.innerHTML='<span class="meter"><span><b>'+se+' dB</b></span><span>blocks <b>'+blocked.toFixed(d)+'%</b></span><span>lets through <b>1 in '+fmt(1/pass)+'</b></span></span> <span class="state'+tag[1]+'">'+tag[0]+'</span>';}
+    var sl=document.getElementById('agw'),out=document.getElementById('se-status'),svg=document.getElementById('emi');if(!sl||!svg)return;
+    var NS='http://www.w3.org/2000/svg',$=function(i){return document.getElementById(i)};
+    var M={5:[[25,33.74,'BAG2'],[50,32.7,'BAG3'],[100,32.8,'AG2']],20:[[50,38,'BAG1'],[100,36,'AG1']]},TM=[[3.7,67,'1:9 molar'],[7.9,80,'1:4 molar']],load=5;
+    var X=function(w){return 50+w*3.2},Ys=function(v){return 252-v*2},Yt=function(v){return 330-v*0.6};
+    function interp(P,w){for(var i=0;i<P.length-1;i++)if(w>=P[i][0]&&w<=P[i+1][0]){var t=(w-P[i][0])/(P[i+1][0]-P[i][0]);return P[i][1]+t*(P[i+1][1]-P[i][1]);}return null;}
+    function sig(w){return 1/(1+Math.exp(-(w-5)/1.5))}
+    function base5(w){return w>=25?interp(M[5],w):33.74}
+    function se(l,w){var lo=M[l][0][0];if(w>=lo)return interp(M[l],w);var b=l===5?33.74:38+(base5(w)-32.7);return 2+(b-2)*sig(w);}
+    function tr(l,w){var f=0.95+0.0003*w-0.7025*Math.exp(-w/2.826);return 88*(l===5?f:Math.pow(f,4));}
+    function hit(P,w){for(var i=0;i<P.length;i++)if(Math.abs(P[i][0]-w)<=0.5)return P[i];return null;}
+    // curves
+    var cg=$('emi-curves');
+    function poly(pts,cls,id){var p=document.createElementNS(NS,'polyline');p.setAttribute('points',pts.map(function(q){return q[0].toFixed(1)+','+q[1].toFixed(1)}).join(' '));p.setAttribute('class',cls);if(id)p.setAttribute('data-l',id);cg.appendChild(p);}
+    function dot(x,y,cls,id){var c=document.createElementNS(NS,'circle');c.setAttribute('cx',x);c.setAttribute('cy',y.toFixed(1));c.setAttribute('r',3.4);c.setAttribute('class',cls);if(id)c.setAttribute('data-l',id);cg.appendChild(c);}
+    [5,20].forEach(function(l){var c=l===5?'N':'C',lo=M[l][0][0],a=[],m=[],t=[],w;
+      for(w=0;w<=lo;w+=0.5)a.push([X(w),Ys(se(l,w))]);for(w=lo;w<=100;w+=1)m.push([X(w),Ys(se(l,w))]);
+      for(w=0;w<=100;w+=0.5)t.push([X(w),Yt(tr(l,w))]);
+      poly(a,'ln'+c+' ind',l);poly(m,'ln'+c,l);M[l].forEach(function(p){dot(X(p[0]),Ys(p[1]),'ln'+c+'d',l)});poly(t,'lnT ind',l);});
+    TM.forEach(function(p){dot(X(p[0]),Yt(p[1]),'lnTd')});
+    // film drawing: fixed pseudo-random positions so particles and wires appear and disappear smoothly
+    var seed=11,rnd=function(){seed=(seed*16807)%2147483647;return seed/2147483647},film=$('emi-film'),P=[],W=[],i;
+    for(i=0;i<46;i++){var c=document.createElementNS(NS,'circle');c.setAttribute('cx',(186+rnd()*40).toFixed(1));c.setAttribute('cy',(16+rnd()*122).toFixed(1));c.setAttribute('r',(3.4+rnd()*2.2).toFixed(1));c.setAttribute('class','bfo');c.setAttribute('opacity',(0.6+rnd()*0.3).toFixed(2));film.appendChild(c);P.push(c);}
+    for(i=0;i<24;i++){var l=document.createElementNS(NS,'line'),x=170+rnd()*72,y=10+rnd()*134,a=rnd()*Math.PI,h=24+rnd()*22;
+      l.setAttribute('x1',(x-Math.cos(a)*h).toFixed(1));l.setAttribute('y1',(y-Math.sin(a)*h).toFixed(1));l.setAttribute('x2',(x+Math.cos(a)*h).toFixed(1));l.setAttribute('y2',(y+Math.sin(a)*h).toFixed(1));l.setAttribute('class','ag');film.appendChild(l);W.push(l);}
+    function wave(id,x0,x1,amp){var p=[];for(var x=x0;x<=x1;x+=2)p.push(x+','+(46-amp*Math.sin((x-14)/40*2*Math.PI)).toFixed(1));$(id).setAttribute('points',p.join(' '));}
+    wave('emi-in',14,186,26);
+    function draw(){
+      var w=+sl.value,f=w/100,nP=Math.round(46*(1-f)*(load===20?1:0.75)),nW=Math.round(24*Math.sqrt(f)*(load===20?1:0.6));
+      P.forEach(function(c,k){c.style.display=k<nP?'':'none'});W.forEach(function(l,k){l.style.display=k<nW?'':'none'});
+      cg.querySelectorAll('[data-l]').forEach(function(e){e.style.opacity=+e.getAttribute('data-l')===load?1:.22});
+      var s=se(load,w),t=tr(load,w),ms=hit(M[load],w),mt=load===5?hit(TM,w):null,ind=w<M[load][0][0];
+      $('emi-mark').setAttribute('x1',X(w));$('emi-mark').setAttribute('x2',X(w));
+      var d=$('emi-dot');d.setAttribute('cx',X(w));d.setAttribute('cy',Ys(s));d.setAttribute('class',(load===5?'lnNd':'lnCd')+' big');
+      var td=$('emi-tdot');td.setAttribute('cx',X(w));td.setAttribute('cy',Yt(t));
+      // drawn transmitted amplitude is magnified 10x so differences between 30 and 40 dB stay visible
+      wave('emi-out',226,386,Math.min(26,26*10*Math.pow(10,-s/20)));$('emi-otx').textContent='drawn 10× larger';
+      var lt=$('emi-lt');lt.style.opacity=(t/100).toFixed(2);$('emi-ltx').textContent=Math.round(t)+'% transmitted';
+      var src=function(m,i){return m?' <span class="src">measured, '+m[2]+'</span>':(i?' <span class="src ind">indicative trend</span>':' <span class="src">interpolated</span>')};
+      var html='<span>Ag <b>'+w+'</b> wt% · <span class="chem">BiFeO₃</span> <b>'+(100-w)+'</b> wt%</span>'
+        +'<span>SE <b>'+s.toFixed(1)+' dB</b>, blocks <b>'+(100*(1-Math.pow(10,-s/10))).toFixed(s<10?1:2)+'%</b>'+src(ms,ind)+'</span>'
+        +'<span>light at 550 nm <b>'+Math.round(t)+'%</b>'+src(mt,true)+'</span>';
+      var ref=M[load][M[load].length-1][1],tag;
+      if(w<4)tag='<span class="state">below percolation: no conducting network</span>';
+      else if(w<100)tag='<span class="state'+(s>=ref?' on':'')+'">'+(100-w)+'% less silver than pure Ag, '+(s>=ref?'+':'−')+Math.abs(s-ref).toFixed(1)+' dB</span>';
+      else tag='<span class="state">pure silver nanowires</span>';
+      out.innerHTML='<span class="meter">'+html+'</span>'+tag;
+      sl.setAttribute('aria-valuetext',w+' wt% Ag, '+(100-w)+' wt% BiFeO₃');}
+    document.querySelectorAll('#emi-seg button').forEach(function(b){b.addEventListener('click',function(){load=+b.dataset.l;document.querySelectorAll('#emi-seg button').forEach(function(o){o.setAttribute('aria-pressed',o===b?'true':'false')});draw();});});
     draw();sl.addEventListener('input',draw);
   })();
 
-  // On narrow screens, scroll the page menu so the current page's link is visible.
+  // Photodetector live model (Surfaces & Interfaces 2025, Table 1). 1:4 Ag:BiFeO3, 2200 W/m² white lamp.
+  // Measured photocurrent (mA) on PET at -1, 0.1, +1 V: 2.0, 0.9, 3.0; at +1 V on glass 4.6, on ITO 3.5.
+  // Rise/fall (s): PET -1 V 14.2/15.4, 0.1 V 33/29, +1 V 13/11; glass 77/57; ITO 66/10. Transparency PET 83, glass 80, ITO 70 %.
+  // Indicative: intensity scaling I^0.8, ~0.6 mA zero-bias (bulk photovoltaic) current, substrate ratios applied at other biases.
+  (function(){
+    var cv=document.getElementById('pd');if(!cv||!cv.getContext)return;
+    var Ls=document.getElementById('pd-light'),Bs=document.getElementById('pd-bias'),out=document.getElementById('pd-status'),cx=cv.getContext('2d');
+    var SUB={pet:{n:'PET',k:1,tr:[1,1],T:83},glass:{n:'glass',k:4.6/3,tr:[77/13,57/11],T:80},ito:{n:'ITO glass',k:3.5/3,tr:[66/13,10/11],T:70}},sub='pet';
+    var IV=[[-1,-2.0],[0,0.6],[0.1,0.9],[1,3.0]],RI=[[-1,14.2],[0.1,33],[1,13]],FA=[[-1,15.4],[0.1,29],[1,11]];
+    function interp(P,x){if(x<=P[0][0])return P[0][1];for(var i=0;i<P.length-1;i++)if(x<=P[i+1][0]){var t=(x-P[i][0])/(P[i+1][0]-P[i][0]);return P[i][1]+t*(P[i+1][1]-P[i][1]);}return P[P.length-1][1];}
+    function lux(s){return s<=0?0:Math.pow(10,-1+s*(Math.log10(2200)+1)/100)}
+    function sky(I){return I<1?'night':I<50?'dawn or dusk':I<300?'overcast day':I<1300?'full sun':'test lamp'}
+    function model(){var s=+Ls.value,I=lux(s),V=Math.round(+Bs.value*10)/10,S=SUB[sub],f=I/2200;
+      var i1=interp(IV,V)*S.k*Math.pow(f,0.8),rt=interp(RI,V)*S.tr[0],ft=interp(FA,V)*S.tr[1];
+      var mb=[-1,0.1,1].indexOf(V)>=0,meas=s===100&&((sub==='pet'&&mb)||V===1);
+      return{s:s,I:I,V:V,S:S,f:f,i:i1,rt:rt,ft:ft,meas:meas,timeMeas:(sub==='pet'&&mb)||V===1};}
+    function css(n){return getComputedStyle(document.documentElement).getPropertyValue(n).trim()}
+    var W,H,dpr,parts=[],wires=[],pairs=[],last=0,acc=0,reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches,seed=5;
+    function rnd(){seed=(seed*16807)%2147483647;return seed/2147483647}
+    function layout(){var w=Math.max(260,Math.round(cv.parentNode.clientWidth-20));dpr=window.devicePixelRatio||1;W=w;H=Math.round(Math.max(300,Math.min(380,w*0.4)));
+      cv.width=Math.round(W*dpr);cv.height=Math.round(H*dpr);cv.style.height=H+'px';cx.setTransform(dpr,0,0,dpr,0,0);
+      seed=5;parts=[];wires=[];var fx0=W*0.1,fx1=W*0.9,fy0=H*0.58,fy1=H*0.75,n=Math.round((fx1-fx0)/8);
+      for(var k=0;k<n;k++)parts.push({x:fx0+rnd()*(fx1-fx0),y:fy0+4+rnd()*(fy1-fy0-8),r:3+rnd()*2.6});
+      for(k=0;k<Math.round(n/3.2);k++){var x=fx0+rnd()*(fx1-fx0),y=fy0+rnd()*(fy1-fy0),a=(rnd()-0.5)*0.5,L=40+rnd()*50;wires.push([x-Math.cos(a)*L,y-Math.sin(a)*L,x+Math.cos(a)*L,y+Math.sin(a)*L]);}}
+    function mix(a,b,t){var p=function(c){return[parseInt(c.slice(1,3),16),parseInt(c.slice(3,5),16),parseInt(c.slice(5,7),16)]},A=p(a),B=p(b);return'rgb('+A.map(function(v,i){return Math.round(v+(B[i]-v)*t)}).join(',')+')'}
+    function frame(t){var m=model(),dt=Math.min(0.05,(t-last)/1000||0);last=t;
+      var day=Math.min(1,m.s/80),fx0=W*0.1,fx1=W*0.9,fy0=H*0.58,fy1=H*0.75,sy1=H*0.4;
+      // sky
+      var g=cx.createLinearGradient(0,0,0,sy1);g.addColorStop(0,mix('#0b1530','#5aa7dc',day));g.addColorStop(1,mix('#1b2a4a','#cfe6f5',day));cx.fillStyle=g;cx.fillRect(0,0,W,sy1);
+      if(day<0.6){cx.fillStyle='rgba(255,255,255,'+(0.8*(1-day/0.6))+')';for(var k=0;k<40;k++){var sx=(k*97.3)%W,sy=(k*53.7)%(sy1*0.8);cx.fillRect(sx,sy,1.6,1.6);}}
+      var sunX=W*0.16+W*0.6*day,sunY=sy1*0.95-sy1*0.7*Math.sin(Math.PI*0.5*day);
+      if(m.s>0){cx.fillStyle=m.s===100?'#ffe7a3':'#ffd166';cx.beginPath();cx.arc(sunX,sunY,10+8*day,0,7);cx.fill();}
+      else{cx.fillStyle='#e8eef5';cx.beginPath();cx.arc(W*0.8,sy1*0.3,11,0,7);cx.fill();cx.fillStyle=mix('#0b1530','#1b2a4a',0.3);cx.beginPath();cx.arc(W*0.8+5,sy1*0.3-3,10,0,7);cx.fill();}
+      // body background
+      cx.fillStyle=css('--band')||'#f0f3f5';cx.fillRect(0,sy1,W,H-sy1);
+      // rays
+      var nr=Math.round(14*Math.pow(m.f,0.35));cx.strokeStyle=css('--f-ray');cx.lineWidth=1.6;cx.globalAlpha=0.25+0.5*day;
+      for(k=0;k<nr;k++){var tx=fx0+(k+0.5)*(fx1-fx0)/nr;cx.setLineDash([6,6]);cx.lineDashOffset=-t/40;cx.beginPath();cx.moveTo(sunX+(tx-sunX)*0.15,sunY+(fy0-sunY)*0.15);cx.lineTo(tx,fy0-2);cx.stroke();}
+      cx.setLineDash([]);cx.globalAlpha=1;
+      // substrate
+      var subC={pet:css('--f-pet'),glass:mix('#e3eef2','#9fc3cc',0.35),ito:mix('#e3eef2','#7d97a6',0.5)}[sub];cx.fillStyle=subC;cx.fillRect(W*0.06,fy1,W*0.88,H*0.08);
+      if(sub==='ito'){cx.fillStyle=mix('#7d97a6','#3e5866',0.6);cx.fillRect(W*0.06,fy1,W*0.88,3);}
+      cx.fillStyle=css('--ink');cx.globalAlpha=0.7;cx.font='11px "IBM Plex Mono", monospace';cx.textAlign='center';cx.fillText(m.S.n+' substrate',W/2,fy1+H*0.04+4);cx.globalAlpha=1;
+      // film: particles and wires
+      cx.fillStyle=css('--f-bfo');parts.forEach(function(p){cx.globalAlpha=0.85;cx.beginPath();cx.arc(p.x,p.y,p.r,0,7);cx.fill();});cx.globalAlpha=1;
+      cx.save();cx.beginPath();cx.rect(fx0,fy0-6,fx1-fx0,fy1-fy0+6);cx.clip();cx.strokeStyle=css('--f-ag');cx.lineWidth=1.8;cx.lineCap='round';wires.forEach(function(w){cx.beginPath();cx.moveTo(w[0],w[1]);cx.lineTo(w[2],w[3]);cx.stroke();});cx.restore();
+      // electrodes + circuit
+      cx.fillStyle='#c9a24a';cx.fillRect(W*0.06,fy0-4,W*0.04,fy1-fy0+4);cx.fillRect(W*0.9,fy0-4,W*0.04,fy1-fy0+4);
+      var cy=H*0.96;cx.strokeStyle=css('--muted');cx.lineWidth=1.2;cx.beginPath();cx.moveTo(W*0.08,fy0-4);cx.lineTo(W*0.08,sy1+12);cx.lineTo(W*0.92,sy1+12);cx.lineTo(W*0.92,fy0-4);cx.stroke();
+      var mx=W*0.5,my=sy1+12;cx.fillStyle=css('--card');cx.beginPath();cx.arc(mx,my,12,0,7);cx.fill();cx.stroke();cx.fillStyle=css('--ink');cx.font='600 11px "IBM Plex Mono", monospace';cx.fillText('A',mx,my+4);
+      cx.font='11px "IBM Plex Mono", monospace';cx.fillStyle=css('--ink');cx.textAlign='left';cx.fillText((m.V>0?'+':m.V<0?'−':'')+Math.abs(m.V).toFixed(1)+' V',W*0.1,sy1+28);
+      cx.textAlign='right';cx.fillText(Math.abs(m.i).toFixed(m.i<0.1&&m.i>-0.1?3:2)+' mA',W*0.9,sy1+28);cx.textAlign='center';
+      // carriers: generation ∝ absorbed photons; collection fraction from measured current ratio; drift speed ∝ 1/rise time
+      var col=Math.max(0.05,Math.min(0.95,Math.abs(interp(IV,m.V))*m.S.k/(3.0*SUB.glass.k)*0.95));
+      var dir=m.V>=0?1:-1,spd=W*0.9*(13/m.rt);
+      if(!reduce){acc+=dt*70*Math.pow(m.f,0.8);while(acc>1&&pairs.length<160){acc-=1;var p=parts[Math.floor(rnd()*parts.length)];pairs.push({x:p.x,y:p.y,ex:p.x,ey:p.y,age:0,ok:rnd()<col,life:0.5+rnd()*0.6});}}
+      else{pairs=[];var npair=Math.round(24*Math.pow(m.f,0.4));for(k=0;k<npair;k++){var q=parts[(k*7)%parts.length];pairs.push({x:q.x+(k%2?10:-10)*dir,y:q.y,ex:q.x-(k%2?10:-10)*dir,ey:q.y,age:0.3,ok:k/npair<col,life:1});}}
+      pairs=pairs.filter(function(q){if(!reduce){q.age+=dt;if(q.ok){q.x+=dir*spd*dt*0.35;q.ex-=dir*spd*dt*0.35;q.y+=(Math.random()-0.5)*1.2;q.ey+=(Math.random()-0.5)*1.2;}}
+        var a=q.ok?1:Math.max(0,1-q.age/q.life);if(!q.ok&&q.age>q.life)return false;if(q.x<fx0-6||q.x>fx1+6||q.ex<fx0-6||q.ex>fx1+6){return false;}
+        cx.globalAlpha=a;cx.lineWidth=1.2;cx.strokeStyle=css('--card');cx.fillStyle=css('--f-gas2');cx.beginPath();cx.arc(q.x,q.y-2,3.2,0,7);cx.fill();cx.stroke();cx.fillStyle=css('--f-gas');cx.beginPath();cx.arc(q.ex,q.ey+2,3.2,0,7);cx.fill();cx.stroke();
+        if(!q.ok&&q.age>q.life*0.7){cx.strokeStyle=css('--f-ray');cx.beginPath();cx.arc(q.x,q.y,4+6*(q.age/q.life),0,7);cx.stroke();}
+        cx.globalAlpha=1;return true;});
+      // legend
+      cx.font='11px "IBM Plex Sans", sans-serif';cx.textAlign='left';var ly=H-10;
+      cx.fillStyle=css('--f-gas2');cx.beginPath();cx.arc(W*0.1+4,ly-4,3,0,7);cx.fill();cx.fillStyle=css('--muted');cx.fillText('hole',W*0.1+12,ly);
+      cx.fillStyle=css('--f-gas');cx.beginPath();cx.arc(W*0.1+56,ly-4,3,0,7);cx.fill();cx.fillStyle=css('--muted');cx.fillText('electron',W*0.1+64,ly);
+      cx.strokeStyle=css('--f-ray');cx.beginPath();cx.arc(W*0.1+130,ly-4,4,0,7);cx.stroke();cx.fillStyle=css('--muted');cx.fillText('recombines',W*0.1+138,ly);
+      if(W>520){cx.textAlign='right';cx.fillText('grey: Ag nanowires · brown: BiFeO₃',W*0.9,ly);}
+      if(!reduce){if(visible)requestAnimationFrame(frame);else running=false;}}
+    function status(){var m=model(),tag;
+      var src=function(x){return' <span class="src'+(x==='indicative trend'?' ind':'')+'">'+x+'</span>'};
+      var iSrc=m.meas?'measured':(m.s===100&&sub==='pet'?'interpolated':'indicative trend');
+      var tSrc=m.s<100?'indicative trend':m.timeMeas?'measured':(sub==='pet'?'interpolated':'indicative trend');
+      out.innerHTML='<span>Light <b>'+(m.I<1?m.I.toFixed(1):Math.round(m.I).toLocaleString('en-IN'))+' W m⁻²</b> · '+sky(m.I)+'</span>'
+        +'<span>Photocurrent <b>'+Math.abs(m.i).toFixed(Math.abs(m.i)<0.1?3:2)+' mA</b>'+(m.V<0?' (reversed)':'')+src(iSrc)+'</span>'
+        +'<span>Rise / fall <b>'+m.rt.toFixed(0)+' / '+m.ft.toFixed(0)+' s</b>'+src(tSrc)+'</span>'
+        +'<span>Device transparency <b>'+m.S.T+'%</b>'+src('measured')+'</span>';
+      Ls.setAttribute('aria-valuetext',Math.round(m.I)+' watts per square metre, '+sky(m.I));Bs.setAttribute('aria-valuetext',m.V.toFixed(1)+' volts');
+      if(reduce)frame(performance.now());}
+    var visible=true,running=false;
+    function start(){if(!running&&!reduce){running=true;last=performance.now();requestAnimationFrame(frame);}}
+    if('IntersectionObserver' in window){new IntersectionObserver(function(e){visible=e[0].isIntersecting;if(visible)start();}).observe(cv);}
+    layout();status();if(reduce)frame(performance.now());else start();
+    Ls.addEventListener('input',status);Bs.addEventListener('input',status);
+    document.querySelectorAll('#pd-model .seg button').forEach(function(b){b.addEventListener('click',function(){sub=b.dataset.s;document.querySelectorAll('#pd-model .seg button').forEach(function(o){o.setAttribute('aria-pressed',o===b?'true':'false')});status();});});
+    var rt;window.addEventListener('resize',function(){clearTimeout(rt);rt=setTimeout(function(){layout();if(reduce)frame(performance.now());},150);});
+  })();
+
   (function(){var on=document.querySelector('nav.sections a.on'),nav=document.querySelector('nav.sections');if(on&&nav&&nav.scrollWidth>nav.clientWidth){var d=on.getBoundingClientRect().left-nav.getBoundingClientRect().left;nav.scrollLeft=Math.max(0,d-nav.clientWidth/2+on.offsetWidth/2);}})();
 </script>
 </body>
