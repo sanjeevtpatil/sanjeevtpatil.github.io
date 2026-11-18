@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Page not found | Dr. Sanjeev Patil</title>
+<title>Page not found | Dr. Sanjeev Patil (PhD)</title>
 <meta name="robots" content="noindex">
 <base href="/">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
@@ -230,6 +230,16 @@ section.band.news{padding-block:44px;border-bottom:1px solid var(--rule)}
 .news-list{list-style:none;margin:0;padding:0;display:grid;gap:12px}
 .news-list li{display:grid;grid-template-columns:92px minmax(0,1fr);gap:16px;font-size:.96rem;padding-bottom:12px;border-bottom:1px dashed var(--rule)}
 .news-list li:last-child{border-bottom:0;padding-bottom:0}
+.sel-list{list-style:none;margin:0;padding:0;display:grid;gap:18px}
+.sel-list li{display:grid;gap:5px;padding-bottom:18px;border-bottom:1px dashed var(--rule)}
+.sel-list li:last-child{border-bottom:0;padding-bottom:0}
+.sel-t{font-family:var(--display);font-size:1.12rem;line-height:1.3;color:var(--ink);text-decoration:none}
+.sel-t:hover{text-decoration:underline;text-decoration-color:var(--copper)}
+.sel-m{font-size:.86rem;color:var(--muted);display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.sel-k{font-size:.94rem}
+.sel-more{margin-top:8px}
+.brand small{font-family:var(--body);font-size:.62em;font-weight:500;color:var(--hero-muted);letter-spacing:.02em;margin-left:2px}
+.hero h1 .post{font-size:.42em;font-weight:400;color:var(--hero-muted);letter-spacing:0;white-space:nowrap;vertical-align:.35em}
 .news-list time{font-family:var(--mono);font-size:.8rem;color:var(--copper);padding-top:2px;font-variant-numeric:tabular-nums}
 p.key{font-size:.9rem;color:var(--ink);margin-top:6px;max-width:72ch}
 p.key span{font-family:var(--mono);font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;color:var(--copper);margin-right:8px}
@@ -349,6 +359,7 @@ footer{background:var(--hero-bg);color:var(--hero-muted);border-top:1px solid va
   .news-list li{grid-template-columns:72px minmax(0,1fr);gap:12px}
 }
 @media (max-width:480px){
+  .brand small{display:none}
   .expertise,.contact-grid{grid-template-columns:1fr}
   .award{grid-template-columns:78px minmax(0,1fr)}
 }
@@ -357,7 +368,7 @@ footer{background:var(--hero-bg);color:var(--hero-muted);border-top:1px solid va
 <body>
 <header class="top">
   <div class="wrap">
-    <a class="brand" href="index.html">Sanjeev Patil<span>.</span></a>
+    <a class="brand" href="index.html">Dr. Sanjeev Patil <small>(PhD)</small></a>
     <nav class="sections" aria-label="Pages">
       <a href="research.html">Research</a>
       <a href="index.html#vision">Vision</a>
@@ -380,7 +391,7 @@ footer{background:var(--hero-bg);color:var(--hero-muted);border-top:1px solid va
   </div>
 </section>
 </main>
-<footer><div class="wrap foot"><span>© 2026 Sanjeev Patil · Updated November 2026 · Header drawings are simulated silver-nanowire percolation networks.</span><nav aria-label="Footer"><a href="index.html">Home</a><a href="research.html">Research</a><a href="publications.html">Publications</a><a href="experience.html">Experience</a><a href="cv.pdf">CV (PDF)</a></nav></div></footer>
+<footer><div class="wrap foot"><span>© 2026 Dr. Sanjeev Patil (PhD) · Updated November 2026 · Header drawings are simulated silver-nanowire percolation networks.</span><nav aria-label="Footer"><a href="index.html">Home</a><a href="research.html">Research</a><a href="publications.html">Publications</a><a href="experience.html">Experience</a><a href="cv.pdf">CV (PDF)</a></nav></div></footer>
 <script>
 (function(){
   // Hero background: a random stick network with marked junctions, like the Ag-nanowire percolation networks in the research.
