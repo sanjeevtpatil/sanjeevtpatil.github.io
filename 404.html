@@ -82,8 +82,8 @@ nav.sections{margin-left:auto}
   background:radial-gradient(circle at var(--tx) var(--ty),transparent calc(var(--lr) - 4px),rgba(255,228,176,.95) var(--lr),rgba(240,170,90,.3) calc(var(--lr) + 12px),transparent calc(var(--lr) + 80px))}
 :root.theming::view-transition-old(light-front),:root.theming::view-transition-new(light-front){display:none}
 :root.theming::view-transition-group(theme-icon){overflow:clip;z-index:3}
-:root.theming::view-transition-old(theme-icon){animation:body-set .3s ease-in both}
-:root.theming::view-transition-new(theme-icon){animation:body-rise .45s cubic-bezier(.2,.8,.3,1) .3s both}
+:root.theming::view-transition-old(theme-icon){animation:body-set .45s ease-in both}
+:root.theming::view-transition-new(theme-icon){animation:body-rise .65s cubic-bezier(.2,.8,.3,1) .45s both}
 @keyframes body-set{to{transform:translateY(130%)}}
 @keyframes body-rise{from{transform:translateY(130%)}}
 nav.sections a{color:var(--hero-muted);text-decoration:none;font-size:.9rem;white-space:nowrap;padding-block:2px;border-bottom:1px solid transparent;transition:color .15s,border-color .15s}
@@ -704,10 +704,10 @@ footer{background:var(--hero-bg);color:var(--hero-muted);border-top:1px solid va
         var vt=document.startViewTransition(function(){set(n)});
         vt.ready.then(function(){
           var a='circle(0px at '+x+'px '+y+'px)',z='circle('+r+'px at '+x+'px '+y+'px)',dark=n==='dark';
-          var o=function(p){return{duration:850,easing:'cubic-bezier(.3,0,.2,1)',fill:'both',pseudoElement:p}};
+          var o=function(p){return{duration:1300,easing:'cubic-bezier(.3,0,.2,1)',fill:'both',pseudoElement:p}};
           R.animate({clipPath:dark?[z,a]:[a,z]},o(dark?'::view-transition-old(root)':'::view-transition-new(root)'));
           R.animate({'--lr':dark?[r+'px','0px']:['0px',r+'px']},o('::view-transition-group(light-front)'));
-          R.animate({opacity:[0,1,1,0],offset:[0,.12,.82,1]},{duration:850,fill:'both',pseudoElement:'::view-transition-group(light-front)'});
+          R.animate({opacity:[0,1,1,0],offset:[0,.12,.82,1]},{duration:1300,fill:'both',pseudoElement:'::view-transition-group(light-front)'});
         }).catch(function(){});
         vt.finished.then(done,done);
       }catch(e){done();set(n);}
