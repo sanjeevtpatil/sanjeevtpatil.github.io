@@ -91,24 +91,21 @@ nav.sections{margin-left:auto}
 .theme .t-sun{display:none}
 @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .theme .t-sun{display:block} :root:not([data-theme="light"]) .theme .t-moon{display:none} }
 :root[data-theme="dark"] .theme .t-sun{display:block} :root[data-theme="dark"] .theme .t-moon{display:none}
-/* Switching animation, after ferroic switching in the multiferroics work: the button flips like a reversing dipole
-   and the new mode sweeps across the page behind a moving domain wall (the thin copper line). Skipped for reduced motion. */
-.theme{view-transition-name:theme-switch}
-.domain-wall{position:fixed;inset:0;pointer-events:none;view-transition-name:domain-wall}
-@media (prefers-reduced-motion:no-preference){
-  :root.theming::view-transition-old(root){animation:none;mix-blend-mode:normal}
-  :root.theming::view-transition-new(root){animation:wall-sweep .75s cubic-bezier(.45,0,.2,1) both;mix-blend-mode:normal;
-    -webkit-mask:linear-gradient(100deg,transparent calc(50% - 5px),#000 calc(50% + 5px)) 0 0/300% 100% no-repeat;mask:linear-gradient(100deg,transparent calc(50% - 5px),#000 calc(50% + 5px)) 0 0/300% 100% no-repeat}
-  :root.theming::view-transition-group(domain-wall){animation:wall-line .75s cubic-bezier(.45,0,.2,1) both;
-    background:linear-gradient(100deg,transparent calc(50% - 12px),rgba(229,154,92,.3) calc(50% - 3px),rgba(255,220,180,.95) 50%,rgba(229,154,92,.3) calc(50% + 3px),transparent calc(50% + 12px)) 0 0/300% 100% no-repeat}
-  :root.theming::view-transition-old(domain-wall),:root.theming::view-transition-new(domain-wall){display:none}
-  :root.theming::view-transition-old(theme-switch){animation:dipole-out .3s ease-in both}
-  :root.theming::view-transition-new(theme-switch){animation:dipole-in .35s cubic-bezier(.2,.9,.3,1.2) .3s both}
-}
-@keyframes wall-sweep{from{-webkit-mask-position:0 0;mask-position:0 0}to{-webkit-mask-position:100% 0;mask-position:100% 0}}
-@keyframes wall-line{from{background-position:0 0}to{background-position:100% 0}}
-@keyframes dipole-out{to{transform:perspective(140px) rotateX(90deg)}}
-@keyframes dipole-in{from{transform:perspective(140px) rotateX(-90deg)}}
+/* Switching animation, after the night-to-day photodetector model: for day, light spreads outward from the button behind a warm
+   front; for night, the light draws back into it. The sun or moon sets and the other rises. Driven from script.html; skipped for reduced motion. */
+@property --lr{syntax:'<length>';inherits:false;initial-value:0px}
+.theme svg{view-transition-name:theme-icon}
+.light-front{position:fixed;inset:0;pointer-events:none;view-transition-name:light-front}
+:root.theming::view-transition-old(root),:root.theming::view-transition-new(root){animation:none;mix-blend-mode:normal}
+:root.theming.to-dark::view-transition-old(root){z-index:1}
+:root.theming::view-transition-group(light-front){animation:none;z-index:2;
+  background:radial-gradient(circle at var(--tx) var(--ty),transparent calc(var(--lr) - 4px),rgba(255,228,176,.95) var(--lr),rgba(240,170,90,.3) calc(var(--lr) + 12px),transparent calc(var(--lr) + 80px))}
+:root.theming::view-transition-old(light-front),:root.theming::view-transition-new(light-front){display:none}
+:root.theming::view-transition-group(theme-icon){overflow:clip;z-index:3}
+:root.theming::view-transition-old(theme-icon){animation:body-set .3s ease-in both}
+:root.theming::view-transition-new(theme-icon){animation:body-rise .45s cubic-bezier(.2,.8,.3,1) .3s both}
+@keyframes body-set{to{transform:translateY(130%)}}
+@keyframes body-rise{from{transform:translateY(130%)}}
 nav.sections a{color:var(--hero-muted);text-decoration:none;font-size:.9rem;white-space:nowrap;padding-block:2px;border-bottom:1px solid transparent;transition:color .15s,border-color .15s}
 nav.sections a:hover,nav.sections a.on{color:var(--hero-ink);border-bottom-color:var(--hero-copper)}
 
@@ -881,11 +878,23 @@ footer{background:var(--hero-bg);color:var(--hero-muted);border-top:1px solid va
     b.addEventListener('click',function(){
       var n=cur()==='dark'?'light':'dark';
       if(busy||still||!document.startViewTransition){set(n);return;}
-      // Animated switch: a temporary full-page layer carries the "domain wall" line while the new mode sweeps in (styles in the head).
-      var wall=document.createElement('div');wall.className='domain-wall';wall.setAttribute('aria-hidden','true');document.body.appendChild(wall);
-      busy=true;R.classList.add('theming');
-      var done=function(){busy=false;R.classList.remove('theming');if(wall.parentNode)wall.parentNode.removeChild(wall);};
-      try{document.startViewTransition(function(){set(n)}).finished.then(done,done);}catch(e){done();set(n);}
+      // Animated switch (styles in the head): day spreads out from the button as a growing circle of light, night draws it back in.
+      var q=b.getBoundingClientRect(),x=q.left+q.width/2,y=q.top+q.height/2,r=Math.hypot(Math.max(x,innerWidth-x),Math.max(y,innerHeight-y))+90;
+      var front=document.createElement('div');front.className='light-front';front.setAttribute('aria-hidden','true');document.body.appendChild(front);
+      R.style.setProperty('--tx',x+'px');R.style.setProperty('--ty',y+'px');
+      busy=true;R.classList.add('theming');if(n==='dark')R.classList.add('to-dark');
+      var done=function(){busy=false;R.classList.remove('theming');R.classList.remove('to-dark');R.style.removeProperty('--tx');R.style.removeProperty('--ty');if(front.parentNode)front.parentNode.removeChild(front);};
+      try{
+        var vt=document.startViewTransition(function(){set(n)});
+        vt.ready.then(function(){
+          var a='circle(0px at '+x+'px '+y+'px)',z='circle('+r+'px at '+x+'px '+y+'px)',dark=n==='dark';
+          var o=function(p){return{duration:850,easing:'cubic-bezier(.3,0,.2,1)',fill:'both',pseudoElement:p}};
+          R.animate({clipPath:dark?[z,a]:[a,z]},o(dark?'::view-transition-old(root)':'::view-transition-new(root)'));
+          R.animate({'--lr':dark?[r+'px','0px']:['0px',r+'px']},o('::view-transition-group(light-front)'));
+          R.animate({opacity:[0,1,1,0],offset:[0,.12,.82,1]},{duration:850,fill:'both',pseudoElement:'::view-transition-group(light-front)'});
+        }).catch(function(){});
+        vt.finished.then(done,done);
+      }catch(e){done();set(n);}
     });
     if(mq&&mq.addEventListener)mq.addEventListener('change',label);
   })();
