@@ -456,6 +456,9 @@ footer{background:var(--hero-bg);color:var(--hero-muted);border-top:1px solid va
           moon; it reproduces the published dates for 2024 to 2030 and was spot-checked against drikpanchang.com for later years.
           A date can still differ by a day from a regional calendar when a lunar day ends close to sunrise.
    DIWALI the Lakshmi Puja day; the theme runs from two days before to two days after.
+   fx     extras drawn by festive.js (a separate file fetched only on festival days): santa (sleigh, hat, elves; up to 26 Dec),
+          fireworks (Diwali, and 31 Dec to 1 Jan), holi (colour puffs and water sprays). Every festival also gets light strings
+          in the empty side margins of wide screens.
    Preview: add ?season=holi (any theme name) or ?date=2027-03-22 (any date) to the address. */
 (function(){
   var R=document.documentElement;R.classList.add('js');
@@ -525,12 +528,14 @@ footer{background:var(--hero-bg);color:var(--hero-muted);border-top:1px solid va
   if(!ids.length)return;
   var sol=ids.filter(function(k){return T[k].s}),rest=ids.filter(function(k){return !T[k].s});ids=(sol.length?[sol[0]].concat(rest):rest).slice(0,2);
   var t=T[ids[0]],g=ids.map(function(k){return T[k].g}).join(' \u00b7 '),c=[];ids.forEach(function(k){if(!t.s||T[k].s)c=c.concat(T[k].c)});
+  var fx=ids[0]==='diwali'?'fireworks':ids[0]==='holi'?'holi':ids[0]==='winter'&&qt?'santa':'';
   if(ids[0]==='winter'&&!qt){
     if(md>='12-24'&&md<='12-26')g='Merry Christmas';
     else if(md>='12-27')g='Happy New Year '+(d.getFullYear()+1);
     else if(md<='01-06')g='Happy New Year '+d.getFullYear();
+    fx=md==='12-31'||md==='01-01'?'fireworks':md>='11-28'&&md<='12-26'?'santa':'';
   }
-  window.__season={id:ids[0],icon:t.i||'spark',particles:t.p||'',lights:c,greet:g,solemn:!!t.s,mark:t.h||''};
+  window.__season={id:ids[0],icon:t.i||'spark',particles:t.p||'',lights:c,greet:g,solemn:!!t.s,mark:t.h||'',fx:fx};
   R.setAttribute('data-season',ids[0]);
 })();
 </script>
@@ -605,6 +610,8 @@ footer{background:var(--hero-bg);color:var(--hero-muted);border-top:1px solid va
       gr.innerHTML=icon+(S.mark==='sindoor'?'<span class="sr-only">Operation Sindoor</span><span class="opmark" aria-hidden="true">OPERATION SIND<i></i>OR</span>':'');
       gr.appendChild(document.createTextNode(S.greet));if(S.solemn)gr.className='greet solemn';
     }
+    // Extras (sleigh, fireworks, colour sprays, side lights, footer scenes) live in festive.js, fetched only on festival days.
+    var X=window.__festive={S:S,still:still,rng:rng,host:f.parentNode,on:function(){return on},size:function(){return[W,H]},redraw:function(){kick()}};
     function rgba(hex,a){return'rgba('+parseInt(hex.slice(1,3),16)+','+parseInt(hex.slice(3,5),16)+','+parseInt(hex.slice(5,7),16)+','+Math.max(0,Math.min(1,a)).toFixed(3)+')'}
     function setup(){
       W=f.clientWidth;H=f.clientHeight;if(!W||!H)return;var D=Math.min(window.devicePixelRatio||1,2),r=rng(2027),i,n=kind?Math.max(22,Math.min(110,Math.round(W*H/9000))):0;
@@ -612,6 +619,7 @@ footer{background:var(--hero-bg);color:var(--hero-muted);border-top:1px solid va
       for(i=0;i<n;i++)P.push({x:r()*W,y:r()*H,s:1.4+r()*r()*5,v:12+r()*24,p:r()*6.2832,a:.45+r()*.5,c:S.lights[i%S.lights.length]});
       var C=J.filter(function(q){return q[0]>W*(S.solemn?.3:.06)}),m=Math.min(C.length,S.solemn?Math.max(5,Math.round(W/150)):Math.max(14,Math.round(W/20))),st=C.length/m;
       for(i=0;i<m;i++){var q=C[Math.floor(i*st+r()*st*.9)];if(q)Lt.push({x:q[0],y:q[1],c:S.lights[i%S.lights.length],p:r()*6.2832,w:1+r()*1.8});}
+      if(X.setup)X.setup(W,H);
     }
     function frame(t){
       raf=0;var dt=Math.min(.05,(t-last)/1000||0),T=t/1000;last=t;g.clearRect(0,0,W,H);
@@ -634,12 +642,14 @@ footer{background:var(--hero-bg);color:var(--hero-muted);border-top:1px solid va
           g.stroke();}
         else{g.fillStyle=rgba('#f2f8fd',p.a);g.beginPath();g.arc(p.x,p.y,Math.max(1,p.s*.6),0,6.2832);g.fill();}
       });
+      if(X.draw)X.draw(g,dt,T,W,H);
       if(on&&!still&&seen)raf=requestAnimationFrame(frame);
     }
-    function kick(){if(raf){cancelAnimationFrame(raf);raf=0;}f.style.display=on?'':'none';if(on){last=performance.now();raf=requestAnimationFrame(frame);}}
+    function kick(){if(raf){cancelAnimationFrame(raf);raf=0;}f.style.display=on?'':'none';document.documentElement.classList.toggle('fx-off',!on);if(X.toggle)X.toggle(on);if(on){last=performance.now();raf=requestAnimationFrame(frame);}}
     function label(){if(!b)return;var s='Turn '+(S.solemn?'remembrance lights ':'festive effects ')+(on?'off':'on');b.setAttribute('aria-pressed',on?'true':'false');b.setAttribute('aria-label',s);b.title=s;}
     if(b){b.innerHTML=icon;label();b.addEventListener('click',function(){on=!on;try{localStorage.setItem('festive',on?'on':'off')}catch(e){}label();kick();});}
-    setup();kick();
+    X.rgba=rgba;setup();kick();
+    if(!S.solemn){var xs=document.createElement('script');xs.src='festive.js';xs.async=true;document.head.appendChild(xs);}
     var tf;window.addEventListener('resize',function(){clearTimeout(tf);tf=setTimeout(function(){setup();kick();},260);});
     if(window.IntersectionObserver)new IntersectionObserver(function(en){var was=seen;seen=en[0].isIntersecting;if(seen&&!was)kick();}).observe(f);
   })();
